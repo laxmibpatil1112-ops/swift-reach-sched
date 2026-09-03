@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicSchedulerRunRouteImport } from './routes/api/public/scheduler/run'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSchedulerRunRoute = ApiPublicSchedulerRunRouteImport.update({
+  id: '/api/public/scheduler/run',
+  path: '/api/public/scheduler/run',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/scheduler/run': typeof ApiPublicSchedulerRunRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/scheduler/run': typeof ApiPublicSchedulerRunRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/scheduler/run': typeof ApiPublicSchedulerRunRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/public/scheduler/run'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/public/scheduler/run'
+  id: '__root__' | '/' | '/api/public/scheduler/run'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicSchedulerRunRoute: typeof ApiPublicSchedulerRunRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/scheduler/run': {
+      id: '/api/public/scheduler/run'
+      path: '/api/public/scheduler/run'
+      fullPath: '/api/public/scheduler/run'
+      preLoaderRoute: typeof ApiPublicSchedulerRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicSchedulerRunRoute: ApiPublicSchedulerRunRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
