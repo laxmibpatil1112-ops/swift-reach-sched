@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ComposeDialog } from "@/components/ComposeDialog";
 import { EmailTable, type JobRow } from "@/components/EmailTable";
+import { SlackIntegrationCard } from "@/components/dashboard/SlackIntegrationCard";
 import { useAuth } from "@/hooks/useAuth";
 import {
   getQueueStats,
