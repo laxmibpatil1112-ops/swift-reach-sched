@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ComposeDialog } from "@/components/ComposeDialog";
 import { EmailTable, type JobRow } from "@/components/EmailTable";
+import { SlackIntegrationCard } from "@/components/dashboard/SlackIntegrationCard";
 import { useAuth } from "@/hooks/useAuth";
 import {
   getQueueStats,
@@ -155,32 +156,40 @@ function Dashboard() {
           ))}
         </div>
 
-        <div className="mt-6 rounded-xl border border-border bg-card">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4">
-            <div className="flex gap-1 rounded-lg bg-muted p-1">
-              {(["scheduled", "sent"] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium capitalize transition-colors ${
-                    tab === t ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-                  }`}
-                >
-                  {t} emails
-                </button>
-              ))}
-            </div>
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                className="pl-9"
-                placeholder="Search recipient or subject"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+        <div className="mt-6 grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="rounded-xl border border-border bg-card">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4">
+                <div className="flex gap-1 rounded-lg bg-muted p-1">
+                  {(["scheduled", "sent"] as const).map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setTab(t)}
+                      className={`rounded-md px-3 py-1.5 text-sm font-medium capitalize transition-colors ${
+                        tab === t ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
+                      }`}
+                    >
+                      {t} emails
+                    </button>
+                  ))}
+                </div>
+                <div className="relative w-full sm:w-64">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    className="pl-9"
+                    placeholder="Search recipient or subject"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+              <EmailTable rows={rows} loading={loading} error={error} tab={tab} />
             </div>
           </div>
-          <EmailTable rows={rows} loading={loading} error={error} tab={tab} />
+
+          <div className="space-y-6">
+            <SlackIntegrationCard />
+          </div>
         </div>
       </main>
 
