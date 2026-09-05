@@ -53,6 +53,26 @@ function Landing() {
     }
   }
 
+  async function signInWithEmail(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
+    if (!email || !password) {
+      toast.error("Enter your email and password");
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      // If the account doesn't exist yet, create it
+      const { error: signUpError } = await supabase.auth.signUp({ email, password });
+      if (signUpError) toast.error(signUpError.message);
+      else toast.success("Account created — you're signed in");
+    }
+    setBusy(false);
+  }
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto flex max-w-5xl flex-col items-center px-6 py-24 text-center">
