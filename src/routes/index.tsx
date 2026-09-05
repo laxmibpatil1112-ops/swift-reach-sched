@@ -53,6 +53,26 @@ function Landing() {
     }
   }
 
+  async function signInWithEmail(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
+    if (!email || !password) {
+      toast.error("Enter your email and password");
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      // If the account doesn't exist yet, create it
+      const { error: signUpError } = await supabase.auth.signUp({ email, password });
+      if (signUpError) toast.error(signUpError.message);
+      else toast.success("Account created — you're signed in");
+    }
+    setBusy(false);
+  }
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto flex max-w-5xl flex-col items-center px-6 py-24 text-center">
@@ -69,6 +89,34 @@ function Landing() {
         <Button className="mt-8" size="lg" onClick={signIn} disabled={busy}>
           {busy ? "Redirecting…" : "Continue with Google"}
         </Button>
+
+        <div className="mt-8 w-full max-w-sm">
+          <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            or with email
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <form onSubmit={signInWithEmail} className="mt-4 space-y-3 text-left">
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="you@company.com"
+              className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <input
+              name="password"
+              type="password"
+              required
+              minLength={6}
+              placeholder="Password (min 6 characters)"
+              className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <Button type="submit" variant="outline" className="w-full" disabled={busy}>
+              Sign in / Create account
+            </Button>
+          </form>
+        </div>
 
         <div className="mt-16 grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f) => (
